@@ -37,9 +37,11 @@ def analyze_event_with_ai(client: genai.Client, title: str, description: str, ve
     4. 'description': A detailed SUMMARY of the event in Spanish, 2-3 paragraphs. SUMMARIZE in your own words. No emojis.
     5. 'min_age': Integer. Minimum age. Return null if not specified.
     6. 'max_age': Integer. Maximum age. Return null if not specified.
-    7. 'orientation': Sexual orientation target. STRICTLY one of: 'straight', 'gay', 'lesbian', 'bisexual', 'all'. Default 'all'.
+    7. 'sexual_orientation': Sexual orientation target. STRICTLY one of: 'straight', 'gay', 'lesbian', 'bisexual', 'all'. Default 'all'.
     8. 'girls_price': Float. Price for women. 0.0 if free. Return null if unknown.
     9. 'boys_price': Float. Price for men. 0.0 if free. Return null if unknown.
+    10. 'street_name': The street name of the venue's address. Return null if not found.
+    11. 'street_number': The street number of the venue's address. Return null if not found.
     """
     
     try:
@@ -55,6 +57,7 @@ def analyze_event_with_ai(client: genai.Client, title: str, description: str, ve
         return {
             "place": "Unknown place", "city": "Unknown city",
             "description": "Description could not be generated.",
-            "min_age": None, "max_age": None, "orientation": "all",
-            "girls_price": None, "boys_price": None
+            "min_age": None, "max_age": None, "sexual_orientation": "all",
+            "girls_price": None, "boys_price": None,
+            "street_name": None, "street_number": None
         }
