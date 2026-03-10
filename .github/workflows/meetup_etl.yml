@@ -1,10 +1,6 @@
 name: Meetup Speed Dating ETL
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch: # Allows manual execution from the Actions tab in GitHub
   schedule:
     # Runs every Monday at 06:00 UTC (07:00 AM CET in Madrid)
