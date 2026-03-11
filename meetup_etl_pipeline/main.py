@@ -17,11 +17,13 @@ def process_events_pipeline():
         print("Initializing AI Client...")
         ai_client = get_gemini_client()
         
+        target_city = "Madrid"
+        
         # 2. Fetch Data from API
         print("Fetching data from Meetup...")
         api_data = fetch_meetup_events(
             query="speed dating", 
-            city="Madrid", 
+            city=target_city, 
             lat=DEFAULT_LATITUDE, 
             lon=DEFAULT_LONGITUDE
         )
@@ -50,13 +52,22 @@ def process_events_pipeline():
             # 4. Parse & Combine
             db_record = build_database_record(node, ai_data)
             
-            # 5. Insert into Supabase
-            print(f"Inserting into Supabase table '{SUPABASE_TABLE_NAME}'...")
-            try:
-                response = supabase.table(SUPABASE_TABLE_NAME).insert(db_record).execute()
-                print(f"Successfully inserted: {db_record.get('title', 'Unknown')}")
-            except Exception as insert_error:
-                print(f"Failed to insert '{db_record.get('title', 'Unknown')}': {insert_error}")
+            # 5. Filter by city and Check for missing fields
+            if db_record.get('city', '').lower() != target_city.lower():
+                print(f"Skipping event '{db_record.get('title', 'Unknown')}' because it is not in {target_city} (Found: {db_record.get('city', 'Unknown')})")
+                continue
+                
+            missing_fields = [k for k, v in db_record.items() if v is None or v == "" or v in ["Unknown place", "Unknown city", "No title", "Description could not be generated.", "Unknown organizer"]]
+            
+            if missing_fields:
+                print(f"Skipping event '{db_record.get('title', 'Unknown')}' due to missing data in fields: {', '.join(missing_fields)}")
+            else:
+                print(f"Inserting into Supabase table '{SUPABASE_TABLE_NAME}'...")
+                try:
+                    response = supabase.table(SUPABASE_TABLE_NAME).insert(db_record).execute()
+                    print(f"Successfully inserted: {db_record.get('title', 'Unknown')}")
+                except Exception as insert_error:
+                    print(f"Failed to insert '{db_record.get('title', 'Unknown')}': {insert_error}")
             
             if i < limit - 1:
                 print("Pausing for 3 seconds...")

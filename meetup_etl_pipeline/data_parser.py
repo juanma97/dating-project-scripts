@@ -31,9 +31,4 @@ def build_database_record(node: Dict, ai_data: Dict) -> Dict[str, Any]:
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
     
-    # Convert string fields to lowercase (except for URLs and dates)
-    for key, value in record.items():
-        if isinstance(value, str) and key not in ['source_url', 'image', 'date', 'time', 'created_at']:
-            record[key] = value.lower()
-            
     return record
