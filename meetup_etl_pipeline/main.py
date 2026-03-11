@@ -57,8 +57,8 @@ def process_events_pipeline():
                 print(f"Skipping event '{db_record.get('title', 'Unknown')}' because it is not in {target_city} (Found: {db_record.get('city', 'Unknown')})")
                 continue
                 
-            mandatory_fields = ["title", "date", "time", "city", "place", "source", "source_url", "street_name", "street_number"]
-            missing_mandatory = [k for k in mandatory_fields if db_record.get(k) in [None, "", "Unknown place", "Unknown city", "No title"]]
+            mandatory_fields = ["date", "time", "city", "street_name", "street_number", "source_url"]
+            missing_mandatory = [k for k in mandatory_fields if db_record.get(k) in [None, ""]]
             
             if missing_mandatory:
                 print(f"Skipping event '{db_record.get('title', 'Unknown')}' due to missing mandatory fields: {', '.join(missing_mandatory)}")
