@@ -4,6 +4,7 @@ from config import DEFAULT_LATITUDE, DEFAULT_LONGITUDE, SUPABASE_PROJECT_URL, SU
 from meetup_client import fetch_meetup_events
 from ai_analyzer import get_gemini_client, analyze_event_with_ai
 from data_parser import build_database_record
+from deduplicator import remove_duplicates
 from supabase import create_client, Client
 
 def process_events_pipeline():
@@ -73,6 +74,9 @@ def process_events_pipeline():
             if i < limit - 1:
                 print("Pausing for 3 seconds...")
                 time.sleep(3)
+        
+        # 6. deduplicate records
+        remove_duplicates(supabase, SUPABASE_TABLE_NAME)
             
     except Exception as e:
         print(f"Pipeline failed: {e}")
