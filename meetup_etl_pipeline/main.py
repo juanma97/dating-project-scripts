@@ -57,10 +57,11 @@ def process_events_pipeline():
                 print(f"Skipping event '{db_record.get('title', 'Unknown')}' because it is not in {target_city} (Found: {db_record.get('city', 'Unknown')})")
                 continue
                 
-            missing_fields = [k for k, v in db_record.items() if v is None or v == "" or v in ["Unknown place", "Unknown city", "No title", "Description could not be generated.", "Unknown organizer"]]
+            mandatory_fields = ["title", "date", "time", "city", "place", "source", "source_url", "street_name", "street_number"]
+            missing_mandatory = [k for k in mandatory_fields if db_record.get(k) in [None, "", "Unknown place", "Unknown city", "No title"]]
             
-            if missing_fields:
-                print(f"Skipping event '{db_record.get('title', 'Unknown')}' due to missing data in fields: {', '.join(missing_fields)}")
+            if missing_mandatory:
+                print(f"Skipping event '{db_record.get('title', 'Unknown')}' due to missing mandatory fields: {', '.join(missing_mandatory)}")
             else:
                 print(f"Inserting into Supabase table '{SUPABASE_TABLE_NAME}'...")
                 try:
