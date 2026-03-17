@@ -2,9 +2,9 @@ name: Clean Passed Events
 
 on:
   schedule:
-    # Se ejecuta todos los días a las 00:00 UTC (cada 24 horas)
+    # Runs every day at 00:00 UTC (every 24 hours)
     - cron: '0 0 * * *'
-  # Permite ejecutar este flujo de trabajo manualmente desde la pestaña de Actions
+   # Allows manual execution from the Actions tab in GitHub
   workflow_dispatch:
 
 jobs:
