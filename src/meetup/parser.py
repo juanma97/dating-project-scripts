@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Dict, Any
-from text_utils import clean_text, parse_datetime
+from utils.text_utils import clean_text, parse_datetime
 
 def build_database_record(node: Dict, ai_data: Dict) -> Dict[str, Any]:
     """Combines raw API data and AI-extracted data into the final DB schema."""

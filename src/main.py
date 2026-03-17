@@ -1,10 +1,10 @@
 import os
 import time
 from config import DEFAULT_LATITUDE, DEFAULT_LONGITUDE, SUPABASE_PROJECT_URL, SUPABASE_ANON_KEY, SUPABASE_TABLE_NAME
-from meetup_client import fetch_meetup_events
-from ai_analyzer import get_gemini_client, analyze_event_with_ai
-from data_parser import build_database_record
-from deduplicator import remove_duplicates
+from meetup.client import fetch_meetup_events
+from gemini.analyzer import get_gemini_client, analyze_event_with_ai
+from meetup.parser import build_database_record
+from supabase_db.deduplicator import remove_duplicates
 from supabase import create_client, Client
 
 def process_events_pipeline():

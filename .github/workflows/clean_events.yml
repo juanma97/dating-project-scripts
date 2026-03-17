@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd meetup_etl_pipeline
+          cd src
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
@@ -32,5 +32,5 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SUPABASE_TABLE_NAME: ${{ secrets.SUPABASE_TABLE_NAME }}
         run: |
-          cd meetup_etl_pipeline
-          python clean_passed_events.py
+          cd src
+          PYTHONPATH=. python supabase_db/clean_passed_events.py
