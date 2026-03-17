@@ -1,0 +1,36 @@
+name: Clean Passed Events
+
+on:
+  schedule:
+    # Se ejecuta todos los días a las 00:00 UTC (cada 24 horas)
+    - cron: '0 0 * * *'
+  # Permite ejecutar este flujo de trabajo manualmente desde la pestaña de Actions
+  workflow_dispatch:
+
+jobs:
+  clean-events:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 'latest'
+
+      - name: Install dependencies
+        run: |
+          cd meetup_etl_pipeline
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run cleanup script
+        env:
+          SUPABASE_PROJECT_URL: ${{ secrets.SUPABASE_PROJECT_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_TABLE_NAME: ${{ secrets.SUPABASE_TABLE_NAME }}
+        run: |
+          cd meetup_etl_pipeline
+          python clean_passed_events.py
