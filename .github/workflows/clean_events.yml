@@ -33,4 +33,4 @@ jobs:
           SUPABASE_TABLE_NAME: ${{ secrets.SUPABASE_TABLE_NAME }}
         run: |
           cd meetup_etl_pipeline
-          python meetup_etl_pipeline/clean_passed_events.py
+          python clean_passed_events.py
