@@ -4,6 +4,7 @@ from config import DEFAULT_LATITUDE, DEFAULT_LONGITUDE, SUPABASE_PROJECT_URL, SU
 from meetup.client import fetch_meetup_events
 from gemini.analyzer import get_gemini_client, analyze_event_with_ai
 from meetup.parser import build_database_record
+from bedazzling.client import fetch_and_parse_bedazzling_events
 from supabase_db.deduplicator import remove_duplicates
 from supabase import create_client, Client
 
@@ -75,7 +76,33 @@ def process_events_pipeline():
                 print("Pausing for 3 seconds...")
                 time.sleep(3)
         
-        # 6. deduplicate records
+        # 6. Fetch and Process Bedazzling Events
+        print("\n--- Starting Bedazzling Events Processing ---")
+        bedazzling_events = fetch_and_parse_bedazzling_events(ai_client)
+        if bedazzling_events:
+            for i, db_record in enumerate(bedazzling_events):
+                print(f"\n--- Processing Bedazzling Event {i + 1} of {len(bedazzling_events)} ---")
+                
+                if db_record.get('city', '').lower() != target_city.lower():
+                    print(f"Skipping event '{db_record.get('title', 'Unknown')}' because it is not in {target_city}")
+                    continue
+                    
+                mandatory_fields = ["date", "time", "city", "street_name", "street_number", "source_url"]
+                missing_mandatory = [k for k in mandatory_fields if db_record.get(k) in [None, ""]]
+                
+                if missing_mandatory:
+                    print(f"Skipping event '{db_record.get('title', 'Unknown')}' due to missing mandatory fields: {', '.join(missing_mandatory)}")
+                else:
+                    print(f"Inserting into Supabase table '{SUPABASE_TABLE_NAME}'...")
+                    try:
+                        response = supabase.table(SUPABASE_TABLE_NAME).insert(db_record).execute()
+                        print(f"Successfully inserted: {db_record.get('title', 'Unknown')} at {db_record.get('date')} {db_record.get('time')}")
+                    except Exception as insert_error:
+                        print(f"Failed to insert '{db_record.get('title', 'Unknown')}': {insert_error}")
+        else:
+            print("No Bedazzling events found or error occurred.")
+
+        # 7. deduplicate records
         remove_duplicates(supabase, SUPABASE_TABLE_NAME)
             
     except Exception as e:

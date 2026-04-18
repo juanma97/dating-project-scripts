@@ -27,7 +27,9 @@ def remove_duplicates(supabase: Client, table_name: str):
                 record.get('street_name'), 
                 record.get('street_number'), 
                 record.get('date'), 
-                record.get('time')
+                record.get('time'),
+                record.get('min_age'),
+                record.get('max_age')
             )
             
             if key in seen:
