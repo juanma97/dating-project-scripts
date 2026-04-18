@@ -37,7 +37,7 @@ def analyze_event_with_ai(client: genai.Client, title: str, description: str, ve
     4. 'description': A detailed SUMMARY of the event in Spanish, 2-3 paragraphs. SUMMARIZE in your own words. No emojis.
     5. 'min_age': Integer. Minimum age. Return null if not specified.
     6. 'max_age': Integer. Maximum age. Return null if not specified.
-    7. 'sexual_orientation': Sexual orientation target. STRICTLY one of: 'straight', 'gay', 'lesbian', 'bisexual', 'all'. Default 'all'.
+    7. 'sexual_orientation': Sexual orientation target. STRICTLY one of: 'straight', 'gay', 'lesbian', 'bisexual', 'all'. Default 'all'. If the event doesn't explicitly specify what type of relationships it is for, infer from prices: if both girls_price and boys_price are mentioned, it is 'straight'. If ONLY boys_price is mentioned, it is 'gay'. If ONLY girls_price is mentioned, it is 'lesbian'.
     8. 'girls_price': Float. Price for women. 0.0 if free. Return null if unknown.
     9. 'boys_price': Float. Price for men. 0.0 if free. Return null if unknown.
     10. 'street_name': The street name of the venue's address. Return null if not found.
